@@ -1,76 +1,69 @@
+// requires
 const http = require('http');
 
+// general vars
 let users = {};
 
-let handleServer = async function (req, res) {
+// server handler
+let handleRegistry = async function (req, res) {
     let path = req.url.split('?')[0].replace('/', '');
 
-    if(!path || path === "/") {
-        res.end('{status:"404"}');
-    } else {
-        if(path === "registry" && req.method === "GET") {
-            res.writeHead(200, {'Content-Type': 'application/json'});
-            res.end(JSON.stringify(users));
-        }
+    if(path === "registry" && req.method === "GET") {
+        sendRegistryUsers(res);
+    } else if (req.method === "GET") {
+        sendRegistryUser(path, res);
+    }
 
-        if (path === "registry" && req.method === "POST") {
-            let body = '';
+    if (path === "registry" && req.method === "POST") {
+        storeRegistryUser(res, req);
+    }
 
-            req.on('data', function(data){
-                body += data.toString();
-            });
-
-            req.on('end', function() {
-
-                let parsedRequest = JSON.parse(body);
-                users[parsedRequest['name']] = parsedRequest;
-
-                res.end(JSON.stringify(users));
-            });
-
-            // if(!users[path]) {
-            //     users[path] = [];
-            // }
-            //
-            // users[path].push(Buffer.concat(buffers).toString());
-            // pushToServer(req.url, Buffer.concat(buffers).toString());
-            // res.end('{status: 200}');
-        }
+    if (req.method === "DELETE") {
+        deleteRegistryUser(res, path);
     }
 }
 
-function pushToServer(path, data) {
-    const options = {
-        hostname: 'localhost',
-        port: 8690,
-        path: path,
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Content-Length': data.length
-        }
-    }
+// functions
+function sendRegistryUsers(res) {
+    res.writeHead(200, {'Content-Type': 'application/json'});
+    res.end(JSON.stringify(users));
+}
 
-    const req = http.request(options, response => {
-        console.log(`statusCode: ${response.statusCode}`)
+function sendRegistryUser(path, res) {
+    res.writeHead(200, {'Content-Type': 'application/json'});
+    res.end(JSON.stringify(users[path]));
+}
 
-        response.on('data', d => {
-            process.stdout.write(d)
-        })
+function storeRegistryUser(res, req) {
+    let body = '';
 
-        req.on('error', error => {
-            console.error(error)
-            response.writeHead(500, {'Content-Type': 'application/json'});
-            response.end(error);
-        })
+    req.on('data', function(data){
+        body += data.toString();
     });
 
-    req.write(data);
-    req.end();
+    req.on('end', function() {
+        let parsedRequest = JSON.parse(body);
+
+        // if user exists check
+        if(users[parsedRequest['name']] === undefined) {
+            users[parsedRequest['name']] = parsedRequest;
+            res.end(JSON.stringify(users));
+        } else {
+            res.end('{status: "404", message: "user exists"}');
+        }
+    });
 }
 
-const server1 = http.createServer(handleServer);
-const server2 = http.createServer(handleServer);
+function deleteRegistryUser(res, path) {
+    if(users[path] !== undefined) {
+        delete users[path];
+        res.end(JSON.stringify(users));
+    } else {
+        res.end('{status:"404"}');
+    }
+}
 
-server1.listen(8690);
+// starter
+const registry = http.createServer(handleRegistry);
+registry.listen(8690);
 console.log("Registry server running on port 8690");
