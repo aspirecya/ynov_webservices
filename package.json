@@ -1,0 +1,20 @@
+{
+  "name": "ynov_webservice",
+  "version": "1.0.0",
+  "description": "",
+  "main": "registry",
+  "scripts": {
+    "registry": "node registry.js",
+    "servers": "node new_server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aspirecya/ynov_webservices.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aspirecya/ynov_webservices/issues"
+  },
+  "homepage": "https://github.com/aspirecya/ynov_webservices#readme"
+}
