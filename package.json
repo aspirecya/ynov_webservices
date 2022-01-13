@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/aspirecya/ynov_webservices/issues"
   },
-  "homepage": "https://github.com/aspirecya/ynov_webservices#readme"
+  "homepage": "https://github.com/aspirecya/ynov_webservices#readme",
+  "dependencies": {
+    "nodemon": "^2.0.15"
+  }
 }

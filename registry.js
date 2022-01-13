@@ -47,7 +47,6 @@ function storeRegistryUser(res, req) {
         // if user exists check
         if(users[parsedRequest['name']] === undefined) {
             users[parsedRequest['name']] = parsedRequest;
-            res.writeHead(200, {'Content-Type': 'application/json'});
             res.end(JSON.stringify(users));
         } else {
             res.send('{status: "404", message: "user exists"}');
