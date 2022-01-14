@@ -16,12 +16,14 @@ let users = {};
 
 let server1User = JSON.stringify({
     'name': 'server1',
-    'port': serverPort
+    'port': serverPort,
+    'host': serverHostname
 });
 
 let server2User = JSON.stringify({
     'name': 'server2',
-    'port': server2Port
+    'port': server2Port,
+    'host': server2Hostname
 });
 
 let handleServer = async function (req, res) {
@@ -31,7 +33,15 @@ let handleServer = async function (req, res) {
         res.end('{status:"404"}');
     } else {
         if (req.method === "GET") {
-            if(path === "all") {
+            if(path === "ping") {
+                ping(res);
+            }
+            else if(path === "users") {
+                let promise = await fetchUsersFromRegistry(res);
+                res.end(promise);
+            }
+            else if(path === "all") {
+                console.log("all");
                 getAllMessages(res);
             } else {
                 getMessages(res, path);
@@ -39,9 +49,23 @@ let handleServer = async function (req, res) {
         }
 
         if (req.method === "POST") {
-            await pushMessage(req, res, path);
+            if(path === "login") {
+                login(req, res);
+            } else {
+                await pushMessage(req, res, path);
+            }
+        }
+
+        if (req.method === "DELETE") {
+            logout(req, res, path);
         }
     }
+}
+
+// ping func
+function ping(res) {
+    res.writeHead(200, {'Content-Type': 'application/json'});
+    res.end();
 }
 
 // registry func
@@ -81,7 +105,7 @@ function postRegistry(userData) {
     const options = {
         hostname: registryHostname,
         port: registryPort,
-        path : '/registry',
+        path : '/register',
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -111,6 +135,87 @@ function fetchUserFromRegistry(username) {
     })
 }
 
+function fetchUsersFromRegistry() {
+    return new Promise(function (resolve, reject) {
+        http.get(`http://${registryHostname}:${registryPort}/registry`, (res) => {
+            res.setEncoding('utf8');
+            res.on('data', function (res) {
+                resolve(res);
+            });
+        });
+    })
+}
+
+function login(req, res) {
+    const options = {
+        hostname: registryHostname,
+        port: registryPort,
+        path: '/register',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    }
+
+    const loginRequest = http.request(options, response => {
+        let body = '';
+        response.on("error", function(e){
+            console.log(e);
+            res.writeHead(500, {'Content-type': 'application/json'});
+            res.end(e);
+        });
+        response.on("data", function(data){
+            body += data.toString();
+        });
+        response.on('end', function(){
+            res.writeHead(200, {'Content-type': 'application/json'});
+            res.end(body);
+        });
+    });
+
+    req.on("error", function(e){
+        console.log(e);
+        res.writeHead(500, {'Content-type': 'application/json'});
+        res.end(e);
+    });
+    req.pipe(loginRequest)
+}
+
+function logout(req, res, path) {
+    const options = {
+        hostname: registryHostname,
+        port: registryPort,
+        path: `/${path}`,
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    }
+
+    const logoutRequest = http.request(options, response => {
+        let body = '';
+        response.on("error", function(e){
+            console.log(e);
+            res.writeHead(500, {'Content-type': 'application/json'});
+            res.end(e);
+        });
+        response.on("data", function(data){
+            body += data.toString();
+        });
+        response.on('end', function(){
+            res.writeHead(200, {'Content-type': 'application/json'});
+            res.end(body);
+        });
+    });
+
+    req.on("error", function(e){
+        console.log(e);
+        res.writeHead(500, {'Content-type': 'application/json'});
+        res.end(e);
+    });
+    req.pipe(logoutRequest)
+}
+
 // message func
 function getMessages(res, path) {
     res.writeHead(200, {'Content-Type': 'application/json'});
@@ -130,34 +235,37 @@ function getAllMessages(res) {
 
 async function pushMessage(req, res, path) {
     const buffers = [];
-    let receiver = users[path];
+    let receiver = await fetchUserFromRegistry(path);
 
     if(receiver !== undefined) {
         for await (const chunk of req) {
             buffers.push(chunk);
         }
 
-        if (!messages[path]) {
-            messages[path] = [];
+        let user = JSON.parse(receiver);
+        const message = Buffer.concat(buffers).toString();
+
+        if (!messages[user.name]) {
+            messages[user.name] = [];
         }
 
-        messages[path].push(Buffer.concat(buffers).toString());
-        pushToClient(path, Buffer.concat(buffers).toString(), receiver);
-        res.end('{status: 200}');
+        messages[user.name].push(Buffer.concat(buffers).toString());
+        pushToClient(message, user, res);
     } else {
         res.end('{status: 200, message: "user not connected"}');
     }
 }
 
-function pushToClient(path, data, receiver) {
+function pushToClient(message, receiver, res) {
     const options = {
-        hostname: 'localhost',
-        port: receiver.port,
-        path: path,
+        port : receiver.port,
+        hostname : receiver.host,
+        host : `${receiver.host}:${receiver.port}`,
+        path : receiver.name,
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Content-Length': data.length
+            'Content-Length': message.length
         }
     }
 
@@ -175,22 +283,23 @@ function pushToClient(path, data, receiver) {
         })
     });
 
-    req.write(data);
+    req.write(message);
     req.end();
+    res.end('{status: 200, message: "message sent"}');
 }
 
 // ----
 initializeRegistry();
-postRegistry(server1User);
-postRegistry(server2User);
+// postRegistry(server1User);
+// postRegistry(server2User);
 
 const server1 = http.createServer(handleServer);
 const server2 = http.createServer(handleServer);
 
 server1.listen(serverPort);
 console.log(`✅ Server 1 running on port ${serverPort}`);
-console.log("📄 Server 1 connected to registry");
+// console.log("📄 Server 1 connected to registry");
 
 server2.listen(server2Port);
 console.log(`✅ Server 2 running on port ${server2Port}`);
-console.log("📄 Server 2 connected to registry");
+// console.log("📄 Server 2 connected to registry");

@@ -3,23 +3,32 @@ const http = require('http');
 
 // general vars
 let users = {};
+const port = 8690;
 
 // server handler
 let handleRegistry = async function (req, res) {
     let path = req.url.split('?')[0].replace('/', '');
 
-    if(path === "registry" && req.method === "GET") {
-        sendRegistryUsers(res);
-    } else if (req.method === "GET") {
-        sendRegistryUser(path, res);
+    if (req.method === "GET") {
+        if (path === "registry") {
+            sendRegistryUsers(res);
+        } else {
+            sendRegistryUser(path, res);
+        }
     }
 
-    if (path === "registry" && req.method === "POST") {
-        storeRegistryUser(res, req);
+    if (req.method === "POST") {
+        if (path === "register") {
+            storeRegistryUser(res, req);
+        }
     }
 
     if (req.method === "DELETE") {
-        deleteRegistryUser(res, path);
+        if (path === "pinginterval") {
+            clearInterval(pingInterval);
+        } else {
+            deleteRegistryUser(res, path);
+        }
     }
 }
 
@@ -37,19 +46,33 @@ function sendRegistryUser(path, res) {
 function storeRegistryUser(res, req) {
     let body = '';
 
-    req.on('data', function(data){
+    req.on('data', function (data) {
         body += data.toString();
     });
 
-    req.on('end', function() {
-        let parsedRequest = JSON.parse(body);
+    req.on('error', function (error) {
+        console.log(error);
+        res.writeHead(500, {'Content-type': 'application/json'});
+        res.end(error);
+    })
 
-        // if user exists check
-        if(users[parsedRequest['name']] === undefined) {
-            users[parsedRequest['name']] = parsedRequest;
-            res.end(JSON.stringify(users));
+    req.on('end', function () {
+        let user = JSON.parse(body);
+
+        if(validateUser(user)) {
+            // if user exists check
+            if (!isUserOnline(user.name)) {
+                users[user.name] = user;
+
+                res.writeHead(200, {'Content-type': 'application/json'});
+                res.end(`message: "connected", users: ${JSON.stringify(users)}`);
+            } else {
+                res.writeHead(500, {'Content-type': 'application/json'});
+                res.end('{error: 500, message: "cet utilisateur existe déjà dans le registre"}');
+            }
         } else {
-            res.send('{status: "404", message: "user exists"}');
+            res.writeHead(500, {'Content-type': 'application/json'});
+            res.end('{error: 500, message: "la requête de login est invalide"}');
         }
     });
 }
@@ -57,13 +80,47 @@ function storeRegistryUser(res, req) {
 function deleteRegistryUser(res, path) {
     if(users[path] !== undefined) {
         delete users[path];
-        res.end(JSON.stringify(users));
+        res.end(`users: ${JSON.stringify(users)}, message: "successfully logged out"`);
     } else {
-        res.end('{status:"404"}');
+        res.end('{status:"404", message: "user is not connected"}');
     }
 }
 
+// helpers
+function validateUser(data) {
+    return 'name' in data && 'host' in data && 'port' in data;
+}
+
+function isUserOnline(user) {
+    return user in users;
+}
+
+// ping func
+function ping() {
+    Object.keys(users).forEach(user => {
+        const ping = http.get(`http://${users[user].host}:${users[user].port}/ping`, (res) => {
+            const { statusCode } = res;
+
+            if(statusCode !== 200) {
+                console.log(`User ${user} died, deleting from registry...`)
+                delete users[user];
+            }
+            console.log(`User ${user} ponged back.`);
+        });
+
+        ping.on('error', function (e) {
+            console.log(`User ${user} died, deleting from registry...`)
+            delete users[user];
+        });
+    });
+}
+
+// ping every 10mn
+const pingInterval = setInterval(() => {
+    ping();
+}, 600000);
+
 // starter
 const registry = http.createServer(handleRegistry);
-registry.listen(8690);
-console.log("Registry server running on port 8690");
+registry.listen(port);
+console.log(`Registry server running on port ${port}`);

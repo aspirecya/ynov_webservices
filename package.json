@@ -4,8 +4,8 @@
   "description": "",
   "main": "registry",
   "scripts": {
-    "registry": "node registry.js",
-    "servers": "node new_server.js"
+    "registry": "nodemon registry.js",
+    "servers": "nodemon new_server.js"
   },
   "repository": {
     "type": "git",
