@@ -68,9 +68,10 @@ function storeRegistryUser(res, req) {
             // if user exists check
             if (!isUserOnline(user.name)) {
                 users[user.name] = user;
+                users.val
 
                 res.writeHead(200, {'Content-type': 'application/json'});
-                res.end(`{"message": "connected", "identity": "${user.name}", "users": ${JSON.stringify(users)}}`);
+                res.end(`{"message": "connected", "identity": "${user.name}", "users": ${JSON.stringify(toArray(users))}}`);
             } else {
                 res.writeHead(500, {'Content-type': 'application/json'});
                 res.end('{"error": 500, "message": "cet utilisateur existe déjà dans le registre"}');
@@ -102,6 +103,9 @@ function isUserOnline(user) {
     return user in users;
 }
 
+function toArray(obj) {
+    return Object.keys(obj).map((k) => obj[k])
+}
 // ping func
 function ping() {
     Object.keys(users).forEach(user => {
