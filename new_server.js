@@ -12,7 +12,7 @@ let server2Port = 8692;
 
 // general vars
 let messages = {};
-let users = {};
+let users = [];
 let client = null;
 
 let server1User = JSON.stringify({

@@ -2,7 +2,7 @@
 const http = require('http');
 
 // general vars
-let users = {};
+let users = [];
 const port = 8690;
 
 // server handler
@@ -35,7 +35,7 @@ let handleRegistry = async function (req, res) {
 // functions
 function sendRegistryUsers(res) {
     res.writeHead(200, {'Content-Type': 'application/json'});
-    res.end(JSON.stringify(users));
+    res.end(JSON.stringify(toArray(users)));
 }
 
 function sendRegistryUser(path, res) {
