@@ -10,7 +10,7 @@ let handleRegistry = async function (req, res) {
     let path = req.url.split('?')[0].replace('/', '');
 
     if (req.method === "GET") {
-        if (path === "registry") {
+        if (path === "users") {
             sendRegistryUsers(res);
         } else {
             sendRegistryUser(path, res);
@@ -39,8 +39,13 @@ function sendRegistryUsers(res) {
 }
 
 function sendRegistryUser(path, res) {
-    res.writeHead(200, {'Content-Type': 'application/json'});
-    res.end(JSON.stringify(users[path]));
+    if(users[path]) {
+        res.writeHead(200, {'Content-Type': 'application/json'});
+        res.end(JSON.stringify(users[path]));
+    } else {
+        res.writeHead(404, {'Content-Type': 'application/json'});
+        res.end('{"error": "404", "message": "user not found"}');
+    }
 }
 
 function storeRegistryUser(res, req) {
@@ -65,14 +70,14 @@ function storeRegistryUser(res, req) {
                 users[user.name] = user;
 
                 res.writeHead(200, {'Content-type': 'application/json'});
-                res.end(`message: "connected", users: ${JSON.stringify(users)}`);
+                res.end(`{"message": "connected", "identity": "${user.name}", "users": ${JSON.stringify(users)}}`);
             } else {
                 res.writeHead(500, {'Content-type': 'application/json'});
-                res.end('{error: 500, message: "cet utilisateur existe déjà dans le registre"}');
+                res.end('{"error": 500, "message": "cet utilisateur existe déjà dans le registre"}');
             }
         } else {
             res.writeHead(500, {'Content-type': 'application/json'});
-            res.end('{error: 500, message: "la requête de login est invalide"}');
+            res.end('{"error": 500, "message": "la requête de login est invalide"}');
         }
     });
 }
@@ -80,9 +85,11 @@ function storeRegistryUser(res, req) {
 function deleteRegistryUser(res, path) {
     if(users[path] !== undefined) {
         delete users[path];
-        res.end(`users: ${JSON.stringify(users)}, message: "successfully logged out"`);
+        res.writeHead(200, {'Content-type': 'application/json'});
+        res.end(`{"users": ${JSON.stringify(users)}, "message": "successfully logged out"}`);
     } else {
-        res.end('{status:"404", message: "user is not connected"}');
+        res.writeHead(404, {'Content-type': 'application/json'});
+        res.end('{"status":"404", "message": "user is not connected"}');
     }
 }
 
@@ -115,10 +122,10 @@ function ping() {
     });
 }
 
-// ping every 10mn
+// ping every 30sec
 const pingInterval = setInterval(() => {
     ping();
-}, 600000);
+}, 60000);
 
 // starter
 const registry = http.createServer(handleRegistry);

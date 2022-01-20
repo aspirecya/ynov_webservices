@@ -233,7 +233,7 @@ function getMessages(res, path) {
         res.end(JSON.stringify([]));
     } else {
         res.end(JSON.stringify(messages[path]));
-        delete messages[path];
+        // delete messages[path];
     }
 }
 
@@ -260,6 +260,11 @@ async function pushMessage(req, res, path) {
             if(req.headers.from === undefined) {
                 pushToClient(message, user, res);
             } else {
+                // if (!messages[user.name]) {
+                //     messages[user.name] = [];
+                // }
+                //
+                // messages[user.name].push(message);
 
                 if (!messages[req.headers.from]) {
                     messages[req.headers.from] = [];
@@ -326,10 +331,11 @@ function validateUser(data) {
 
 // ----
 initializeRegistry();
-// postRegistry(server1User);
 // postRegistry(server2User);
 
-const server1 = http.createServer(handleServer);
+const server2 = http.createServer(handleServer);
 
-server1.listen(serverPort);
-console.log(`✅ Server 1 running on port ${serverPort}`);
+
+server2.listen(server2Port);
+console.log(`✅ Server 2 running on port ${server2Port}`);
+// console.log("📄 Server 2 connected to registry");
