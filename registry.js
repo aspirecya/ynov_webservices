@@ -68,7 +68,6 @@ function storeRegistryUser(res, req) {
             // if user exists check
             if (!isUserOnline(user.name)) {
                 users[user.name] = user;
-                users.val
 
                 res.writeHead(200, {'Content-type': 'application/json'});
                 res.end(`{"message": "connected", "identity": "${user.name}", "users": ${JSON.stringify(toArray(users))}}`);
