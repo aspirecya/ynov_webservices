@@ -145,7 +145,7 @@ function fetchUserFromRegistry(username) {
 
 function fetchUsersFromRegistry() {
     return new Promise(function (resolve, reject) {
-        http.get(`http://${registryHostname}:${registryPort}/registry`, (res) => {
+        http.get(`http://${registryHostname}:${registryPort}/users`, (res) => {
             res.setEncoding('utf8');
             res.on('data', function (res) {
                 resolve(res);
