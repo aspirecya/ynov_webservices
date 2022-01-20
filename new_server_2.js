@@ -12,7 +12,7 @@ let server2Port = 8692;
 
 // general vars
 let messages = {};
-let users = {};
+let users = [];
 let client = null;
 
 let server1User = JSON.stringify({
@@ -145,7 +145,7 @@ function fetchUserFromRegistry(username) {
 
 function fetchUsersFromRegistry() {
     return new Promise(function (resolve, reject) {
-        http.get(`http://${registryHostname}:${registryPort}/registry`, (res) => {
+        http.get(`http://${registryHostname}:${registryPort}/users`, (res) => {
             res.setEncoding('utf8');
             res.on('data', function (res) {
                 resolve(res);
@@ -233,7 +233,7 @@ function getMessages(res, path) {
         res.end(JSON.stringify([]));
     } else {
         res.end(JSON.stringify(messages[path]));
-        // delete messages[path];
+        delete messages[path];
     }
 }
 
@@ -260,11 +260,6 @@ async function pushMessage(req, res, path) {
             if(req.headers.from === undefined) {
                 pushToClient(message, user, res);
             } else {
-                // if (!messages[user.name]) {
-                //     messages[user.name] = [];
-                // }
-                //
-                // messages[user.name].push(message);
 
                 if (!messages[req.headers.from]) {
                     messages[req.headers.from] = [];
