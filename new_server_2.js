@@ -260,7 +260,6 @@ async function pushMessage(req, res, path) {
             if(req.headers.from === undefined) {
                 pushToClient(message, user, res);
             } else {
-
                 if (!messages[req.headers.from]) {
                     messages[req.headers.from] = [];
                 }
