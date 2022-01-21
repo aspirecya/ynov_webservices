@@ -1,6 +1,13 @@
 // requires
 const http = require('http');
 
+// helper vars
+const headers = {
+    'Content-Type': 'application/json',
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
+};
+
 // general vars
 let users = [];
 const port = 8690;
@@ -34,13 +41,13 @@ let handleRegistry = async function (req, res) {
 
 // functions
 function sendRegistryUsers(res) {
-    res.writeHead(200, {'Content-Type': 'application/json'});
+    res.writeHead(200, headers);
     res.end(JSON.stringify(toArray(users)));
 }
 
 function sendRegistryUser(path, res) {
     if(users[path]) {
-        res.writeHead(200, {'Content-Type': 'application/json'});
+        res.writeHead(200, headers);
         res.end(JSON.stringify(users[path]));
     } else {
         res.writeHead(404, {'Content-Type': 'application/json'});
@@ -69,14 +76,14 @@ function storeRegistryUser(res, req) {
             if (!isUserOnline(user.name)) {
                 users[user.name] = user;
 
-                res.writeHead(200, {'Content-type': 'application/json'});
+                res.writeHead(200, headers);
                 res.end(`{"message": "connected", "identity": "${user.name}", "users": ${JSON.stringify(toArray(users))}}`);
             } else {
-                res.writeHead(500, {'Content-type': 'application/json'});
+                res.writeHead(500, headers);
                 res.end('{"error": 500, "message": "cet utilisateur existe déjà dans le registre"}');
             }
         } else {
-            res.writeHead(500, {'Content-type': 'application/json'});
+            res.writeHead(500, headers);
             res.end('{"error": 500, "message": "la requête de login est invalide"}');
         }
     });
@@ -85,10 +92,10 @@ function storeRegistryUser(res, req) {
 function deleteRegistryUser(res, path) {
     if(users[path] !== undefined) {
         delete users[path];
-        res.writeHead(200, {'Content-type': 'application/json'});
+        res.writeHead(200, headers);
         res.end(`{"users": ${JSON.stringify(users)}, "message": "successfully logged out"}`);
     } else {
-        res.writeHead(404, {'Content-type': 'application/json'});
+        res.writeHead(404, headers);
         res.end('{"status":"404", "message": "user is not connected"}');
     }
 }

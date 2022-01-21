@@ -1,5 +1,12 @@
 const http = require('http');
 
+// helper vars
+const headers = {
+    'Content-Type': 'application/json',
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
+};
+
 // server vars
 let registryHostname = "localhost";
 let registryPort = 8690;
@@ -55,11 +62,11 @@ let handleServer = async function (req, res) {
                 if(client) {
                     await pushMessage(req, res, path.split('/')[1]);
                 } else {
-                    res.writeHead(404, {'Content-Type': 'application/json'});
+                    res.writeHead(404, headers);
                     res.end('{"status":"404", "message": "not logged in"}');
                 }
             } else {
-                res.writeHead(404, {'Content-Type': 'application/json'});
+                res.writeHead(404, headers);
                 res.end('{"status":"404"}');
             }
         }
@@ -72,7 +79,7 @@ let handleServer = async function (req, res) {
 
 // ping func
 function ping(res) {
-    res.writeHead(200, {'Content-Type': 'application/json'});
+    res.writeHead(200, headers);
     res.end();
 }
 
@@ -101,7 +108,7 @@ function initializeRegistry() {
 
         response.on("error", function (e) {
             console.log(e);
-            response.writeHead(500, {'Content-type': 'application/json'});
+            response.writeHead(500, headers);
             response.end(e);
         });
     });
@@ -123,7 +130,7 @@ function postRegistry(userData) {
     const req = http.request(options, response => {
         response.on("error", function (e) {
             console.log(e);
-            response.writeHead(500, {'Content-type': 'application/json'});
+            response.writeHead(500, headers);
             response.end(e);
         });
     });
@@ -169,7 +176,7 @@ function login(req, res) {
         let body = '';
         response.on("error", function(e){
             console.log(e);
-            res.writeHead(500, {'Content-type': 'application/json'});
+            res.writeHead(500, headers);
             res.end(e);
         });
         response.on("data", function(data){
@@ -177,14 +184,14 @@ function login(req, res) {
         });
         response.on('end', function(){
             storeClientIdentity(JSON.parse(body));
-            res.writeHead(200, {'Content-type': 'application/json'});
+            res.writeHead(200, headers);
             res.end(body);
         });
     });
 
     req.on("error", function(e){
         console.log(e);
-        res.writeHead(500, {'Content-type': 'application/json'});
+        res.writeHead(500, headers);
         res.end(e);
     });
     req.pipe(loginRequest);
@@ -205,21 +212,21 @@ function logout(req, res, path) {
         let body = '';
         response.on("error", function(e){
             console.log(e);
-            res.writeHead(500, {'Content-type': 'application/json'});
+            res.writeHead(500, headers);
             res.end(e);
         });
         response.on("data", function(data){
             body += data.toString();
         });
         response.on('end', function(){
-            res.writeHead(200, {'Content-type': 'application/json'});
+            res.writeHead(200, headers);
             res.end(body);
         });
     });
 
     req.on("error", function(e){
         console.log(e);
-        res.writeHead(500, {'Content-type': 'application/json'});
+        res.writeHead(500, headers);
         res.end(e);
     });
     req.pipe(logoutRequest)
@@ -227,7 +234,7 @@ function logout(req, res, path) {
 
 // message func
 function getMessages(res, path) {
-    res.writeHead(200, {'Content-Type': 'application/json'});
+    res.writeHead(200, headers);
 
     if(!messages[path]) {
         res.end(JSON.stringify([]));
@@ -238,7 +245,7 @@ function getMessages(res, path) {
 }
 
 function getAllMessages(res) {
-    res.writeHead(200, {'Content-Type': 'application/json'});
+    res.writeHead(200, headers);
     res.end(JSON.stringify(messages));
 }
 
@@ -267,11 +274,11 @@ async function pushMessage(req, res, path) {
                 messages[req.headers.from].push(message);
             }
         } else {
-            res.writeHead(user.error, {'Content-Type': 'application/json'});
+            res.writeHead(user.error, headers);
             res.end(`{"status": ${user.error}, "message": ${user.message}}`);
         }
     } else {
-        res.writeHead(404, {'Content-Type': 'application/json'});
+        res.writeHead(404, headers);
         res.end('{"status": "404", "message": "user not connected"}');
     }
 }
@@ -299,14 +306,14 @@ function pushToClient(message, receiver, res) {
 
         req.on('error', error => {
             console.error(error)
-            response.writeHead(500, {'Content-Type': 'application/json'});
+            response.writeHead(500, headers);
             response.end(error);
         })
     });
 
     req.write(message);
     req.end();
-    res.writeHead(200, {'Content-type': 'application/json'});
+    res.writeHead(200, headers);
     res.end('{"status": "200", "message": "message sent"}');
 }
 
