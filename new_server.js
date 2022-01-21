@@ -163,6 +163,7 @@ function fetchUsersFromRegistry() {
     })
 }
 
+
 function login(req, res) {
     const options = {
         hostname: registryHostname,

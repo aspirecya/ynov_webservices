@@ -50,7 +50,7 @@ function sendRegistryUser(path, res) {
         res.writeHead(200, headers);
         res.end(JSON.stringify(users[path]));
     } else {
-        res.writeHead(404, {'Content-Type': 'application/json'});
+        res.writeHead(404, headers);
         res.end('{"error": "404", "message": "user not found"}');
     }
 }
@@ -64,7 +64,7 @@ function storeRegistryUser(res, req) {
 
     req.on('error', function (error) {
         console.log(error);
-        res.writeHead(500, {'Content-type': 'application/json'});
+        res.writeHead(500, headers);
         res.end(error);
     })
 
