@@ -9,7 +9,7 @@ const headers = {
 
 // server vars
 let registryHostname = "localhost";
-let registryPort = 8690;
+let registryPort = 1337;
 
 let serverHostname = "localhost";
 let serverPort = 8691;

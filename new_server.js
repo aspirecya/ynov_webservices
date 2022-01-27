@@ -9,13 +9,10 @@ const headers = {
 
 // server vars
 let registryHostname = "localhost";
-let registryPort = 8690;
+let registryPort = 1337;
 
 let serverHostname = "localhost";
-let serverPort = 8691;
-
-let server2Hostname = "localhost";
-let server2Port = 8692;
+let serverPort = 8005;
 
 // general vars
 let messages = {};
@@ -26,12 +23,6 @@ let server1User = JSON.stringify({
     'name': 'server1',
     'port': serverPort,
     'host': serverHostname
-});
-
-let server2User = JSON.stringify({
-    'name': 'server2',
-    'port': server2Port,
-    'host': server2Hostname
 });
 
 let handleServer = async function (req, res) {
@@ -338,7 +329,6 @@ function validateUser(data) {
 // ----
 initializeRegistry();
 // postRegistry(server1User);
-// postRegistry(server2User);
 
 const server1 = http.createServer(handleServer);
 

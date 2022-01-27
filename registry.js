@@ -10,7 +10,7 @@ const headers = {
 
 // general vars
 let users = [];
-const port = 8690;
+const port = 1337;
 
 // server handler
 let handleRegistry = async function (req, res) {
@@ -112,6 +112,7 @@ function isUserOnline(user) {
 function toArray(obj) {
     return Object.keys(obj).map((k) => obj[k])
 }
+
 // ping func
 function ping() {
     Object.keys(users).forEach(user => {
