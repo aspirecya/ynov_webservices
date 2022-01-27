@@ -123,10 +123,23 @@ export default function Test() {
     if (w[0]) setTo(w[0].name);
     setconnected(true);
     window.setTimeout(() => {
-      window.addEventListener("beforeunload", async (e) => {
-        console.log(portswitcher);
-      });
-    }, 1000);
+      window.onbeforeunload =  (e)=> {
+        e = e || window.event;
+        e.preventDefault();
+        logout();
+
+        e.returnValue = '';
+      
+      
+        // For IE and Firefox prior to version 4
+        if (e) {
+            e.returnValue = 'Sure?';
+        }
+    
+        // For Safari
+        return 'Sure?';
+    };
+    }, 200);
   };
 
   const loop = (To, messages, from, trigger) => {

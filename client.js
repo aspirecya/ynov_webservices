@@ -67,9 +67,9 @@ let handleServer = async function (req, res) {
         }
 
         if (req.method === "DELETE") {
-            if(path === "logout") {
+          
                 logout(req, res, path);
-            }
+            
         }
     }
 }
