@@ -1,0 +1,92 @@
+.Me,.To {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: end;
+  background-color: $primary;
+  border: none;
+  font-size: 18px;
+  height: 72px;
+  position: relative;
+  span {
+    color: white;
+  }
+  color: white;
+  width: fit-content;
+  height: 100%;
+  margin: 0;
+  padding: 20px;
+
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all ease-out 0.2s;
+
+  &.s {
+    height: 52px;
+    font-size: 16px;
+  }
+}
+.Docs{
+  z-index: 1;
+  position: absolute;
+  overflow: auto;
+  max-height: 100vh;
+  max-width: 20vw;
+  left: -20vw;
+  transition: all cubic-bezier(0.86, 0, 0.07, 1);
+  &.Open{
+    left: 0;
+  }
+}
+.OpenDocsContainer{
+  position: absolute;
+  left: 0;
+  transform: translateX(-30%);
+  pointer-events: none;
+  .OpenDocs{  
+    pointer-events: all;
+    cursor: pointer;
+    background-color: $primary;
+    padding: 20px;
+    color: white;
+    transform: rotate(90deg);
+  }
+}
+
+.To{
+  align-self: flex-start;
+  background-color: $secondary;
+}
+
+.ListUser {
+  width: 10%;
+  @include media("<tablet") {
+    width: 40%;
+  }
+  height: 100%;
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  align-items: flex-start;
+  span {
+    margin-right: 2rem;
+    cursor: pointer;
+    transition: all .7S ease-in-out;
+    &.selected {
+      color: $primary;
+      font-size: 3rem;
+      @include media("<tablet") {
+        font-size: 8rem;
+      }
+    }
+    font-size: 2rem;
+    @include media("<tablet") {
+      font-size: 7rem;
+    }
+  }
+}
+
+section{
+
+  display: flex;
+}

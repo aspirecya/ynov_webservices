@@ -1,0 +1,89 @@
+.Loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: z("loader");
+  .Loader-stats-container {
+    opacity: 0;
+  }
+
+  .step {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    .step-container {
+      width: fit-content;
+      display: flex;
+      flex-direction: column;
+      .LoaderText {
+        font-family: $font-all;
+        font-size: 25rem;
+        line-height: 1;
+
+        @include media("<phone") {
+          font-size: 10rem;
+        }
+      }
+      .Loader-percent.LoaderSubText {
+        display: flex;
+        justify-content: flex-end;
+      }
+      .LoaderSubText {
+        text-align: end;
+        font-family: $font-all;
+        font-size: 4rem;
+        // @include media("<phone") {
+        //   font-size: 3rem;
+        // }
+      }
+    }
+  }
+  .step1 {
+    span {
+      opacity: 0;
+    }
+    .LoaderSubText {
+      p {
+        margin-right: 1rem;
+      }
+
+      span {
+        opacity: 0.4;
+      }
+    }
+  }
+
+  .step2 {
+    .step-container {
+      .LoaderText{
+     
+      }
+      .LoaderSubText{
+        opacity: 0.4;
+      }
+      p {
+        span {
+       
+          opacity: 0;
+        }
+      }
+    }
+  }
+
+  //   // &.Loader-quote-tab.Loader-step1:first-letter {
+  //   //   float: left;
+  //   //   font-size: 8rem;
+  //   //   line-height: 6rem;
+  //   //   margin-left: -0.5rem;
+  //   // }
+}

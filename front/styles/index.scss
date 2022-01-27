@@ -1,0 +1,70 @@
+@import "./base/reset";
+
+@import "./utils/variables";
+@import "./utils/functions";
+@import "./utils/mixins";
+@import "./utils/vendors";
+@import "./utils/responsive";
+
+@import "./shared/descriptions";
+@import "./shared/links";
+@import "./shared/pages";
+@import "./shared/titles";
+@import "./shared/vertical-titles";
+
+@import "./base/fonts";
+@import "./base/base";
+@import "./base/scroll";
+
+@import "./shared/Title.scss";
+@import "./shared/Nav.scss";
+@import "./shared/Input";
+@import "./shared/Button";
+@import "./shared/Form";
+
+@import "./components/garbage.scss";
+
+// Destroy Controller SCSS
+// main {
+//   opacity: 1;
+//   visibility: visible;
+// }
+// img[data-canvas] {
+//   opacity: 1;
+//   visibility: visible;
+// }
+
+// .Loader {
+//   display: none;
+// }
+.FullScreenRef{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+}
+.ITEM1{
+        width: 25%;
+    position: absolute;
+    top: 10%;
+    height: 300px;
+  
+}
+.ITEM2{
+        width: 25%;
+    position: absolute;
+    top: 10%;
+    left:35%;
+    right: 0;
+    height: 300px;
+
+}
+.ITEM3{
+        width: 25%;
+    position: absolute;
+    top: 10%;
+    right: 0;
+    height: 300px;
+
+}

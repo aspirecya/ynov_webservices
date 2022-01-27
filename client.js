@@ -4,7 +4,8 @@ const http = require('http');
 const headers = {
     'Content-Type': 'application/json',
     "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
+    "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept",
+    "Access-Control-Allow-Methods":"PUT,GET,POST,DELETE,OPTIONS"
 };
 
 // server vars
@@ -27,7 +28,10 @@ let server1User = JSON.stringify({
 
 let handleServer = async function (req, res) {
     let path = req.url.split('?')[0].replace('/', '');
-
+    res.setHeader(
+        "Access-Control-Allow-Methods",
+        "POST,GET,OPTIONS,DELETE,PUT"
+      );
     if(!path || path === "/") {
         res.end('{status:"404"}');
     } else {
@@ -83,9 +87,7 @@ function initializeRegistry() {
         port: registryPort,
         path : '/users',
         method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        }
+        headers: headers
     }
 
     const req = http.request(options, response => {
@@ -115,9 +117,7 @@ function postRegistry(userData) {
         port: registryPort,
         path : '/register',
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        }
+        headers: headers
     }
 
     const req = http.request(options, response => {
@@ -161,9 +161,7 @@ function login(req, res) {
         port: registryPort,
         path: '/register',
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        }
+        headers: headers
     }
 
     const loginRequest = http.request(options, response => {
@@ -197,9 +195,7 @@ function logout(req, res, path) {
         port: registryPort,
         path: `/${path}`,
         method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json',
-        }
+        headers: headers
     }
 
     const logoutRequest = http.request(options, response => {
@@ -288,8 +284,8 @@ function pushToClient(message, receiver, res) {
         method: 'POST',
         headers: {
             'from': client,
-            'Content-Type': 'application/json',
-            'Content-Length': message.length
+            'Content-Length': message.length,
+            ...headers
         }
     }
 

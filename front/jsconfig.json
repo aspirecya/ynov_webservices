@@ -1,0 +1,16 @@
+   {
+    "compilerOptions": {
+      "baseUrl": ".",
+      "paths": {
+        "@components/*": ["components/*"],
+        "@utils/*": ["utils/*"],
+        "@styles/*": ["styles/*"],
+        "@assets/*": ["assets/*"],
+        "@classes/*": ["classes/*"],
+        "@animations/*": ["animations/*"],
+        "@pages/*": ["pages/*"],
+        "@views/*": ["views/*"],
+        "@ControllerV2/*": ["ControllerV2/*"],
+      }
+    }
+  }

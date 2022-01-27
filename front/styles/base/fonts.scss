@@ -1,0 +1,71 @@
+
+
+@font-face {
+  font-family: $font-suisse-bp;
+  src: url("../../assets/fonts/suissebp-regular.woff2") format("woff2"),
+    url("../../assets/fonts/suissebp-regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: $font-suisse-bp;
+  src: url("../../assets/fonts/suissebp-light.woff2") format("woff2"),
+    url("../../assets/fonts/suissebp-light.woff") format("woff");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: $font-suisse-bp;
+  src: url("../../assets/fonts/suissebp-light.woff2") format("woff2"),
+    url("../../assets/fonts/suissebp-light.woff") format("woff");
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "MAVISBOLD";
+  src: url("../../assets/fonts/MAVISBold.woff") format("woff");
+}
+@font-face {
+  font-family: "MAVISLIGHT";
+  src: url("../../assets/fonts/MAVISLight.woff") format("woff");
+}
+@font-face {
+  font-family: "MAVISREGULAR";
+  src:  url("../../assets/fonts/MAVISRegular.woff") format("woff");
+}
+@font-face {
+  font-family: "NOLA";
+  src:  url("../../assets/fonts/NOLA.woff") format("woff");
+  text-transform: uppercase;
+}
+
+@font-face {
+  font-family: "MORTEND";
+  src: url("../../assets/fonts/MortendLight.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Akira";
+  src: url("../../assets/fonts/Akira.woff") format("woff");
+}
+@font-face {
+  font-family: "PortonBold";
+  src: url("../../assets/fonts/PortonBold.woff") format("woff");
+}
+@font-face {
+  font-family: "PortonRegular";
+  src: url("../../assets/fonts/PortonRegular.woff") format("woff");
+}
+@font-face {
+  font-family: "Rockstar";
+  src: url("../../assets/fonts/Rockstar.woff") format("woff");
+}
+@font-face {
+  font-family: "Akkurat";
+  src: url("../../assets/fonts/Akkurat.ttf") format("ttf");
+}

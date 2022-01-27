@@ -1,0 +1,20 @@
+
+body.scrolling{
+   overflow: visible;
+}
+::-webkit-scrollbar {
+  min-width: 11px;
+  min-height: 11px;
+  background-color: unset;
+}
+
+::-webkit-scrollbar-track {
+
+}
+
+::-webkit-scrollbar-thumb {
+  opacity: 0.9;
+  background: #282c34;
+  transform-origin: center right;
+  transition: transform 0.3s, opacity 0.3s;
+}

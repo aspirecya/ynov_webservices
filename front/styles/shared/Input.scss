@@ -1,0 +1,31 @@
+input{
+font-size: 18px;
+height: 72px;
+line-height: 30px;
+display: block;
+width: 100%;
+margin: 0;
+padding: 20px;
+border: 2px solid #e2e8f0;
+border-radius: 8px;
+font-family: inherit;
+background-color: #fff;
+outline: 0;
+transition-duration: 0.2s;
+&.centered__text{
+  text-align: center;
+}
+&.uppercase{
+  text-transform: uppercase;
+}
+&:hover {
+  border-color: #cbd5e1;
+}
+&:placeholder {
+  color: #64748b;
+  opacity: 1;
+}
+&:focus {
+  border-color: $primary;
+  box-shadow: 0 0 0 4px #d6e3fd;
+}}
