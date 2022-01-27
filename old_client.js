@@ -36,7 +36,7 @@ let handleRequest = async function (req,res) {
     }
 }
 
-const old_server = http.createServer(handleRequest);
+const old_client = http.createServer(handleRequest);
 
-old_server.listen(8690);
+old_client.listen(8690);
 console.log("Server running");

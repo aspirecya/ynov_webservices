@@ -5,8 +5,8 @@
   "main": "registry",
   "scripts": {
     "registry": "nodemon registry.js",
-    "server1": "nodemon new_server.js",
-    "server2": "nodemon new_server_2.js"
+    "server1": "nodemon client.js",
+    "server2": "nodemon client_2.js"
   },
   "repository": {
     "type": "git",
